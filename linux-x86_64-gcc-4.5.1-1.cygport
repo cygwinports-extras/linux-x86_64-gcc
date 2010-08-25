@@ -1,0 +1,51 @@
+TOOLCHAIN_TARGET="x86_64-pc-linux-gnu"
+ORIG_PN="gcc"
+inherit toolchain
+
+DESCRIPTION="GCC for Linux x86_64 toolchain"
+HOMEPAGE="http://gcc.gnu.org/"
+
+case ${#PV[3]} in
+8)	snapshot_v="${PV[1]}.${PV[2]}-${PV[3]}"
+	SRC_URI="mirror://gcc/snapshots/${snapshot_v}/gcc-core-${snapshot_v}.tar.bz2
+	         mirror://gcc/snapshots/${snapshot_v}/gcc-ada-${snapshot_v}.tar.bz2
+	         mirror://gcc/snapshots/${snapshot_v}/gcc-fortran-${snapshot_v}.tar.bz2
+	         mirror://gcc/snapshots/${snapshot_v}/gcc-g++-${snapshot_v}.tar.bz2
+	         mirror://gcc/snapshots/${snapshot_v}/gcc-objc-${snapshot_v}.tar.bz2"
+	SRC_DIR="gcc-${snapshot_v}"
+	;;
+*)	SRC_URI="mirror://gnu/gcc/gcc-${PV}/gcc-core-${PV}.tar.bz2
+	         mirror://gnu/gcc/gcc-${PV}/gcc-ada-${PV}.tar.bz2
+	         mirror://gnu/gcc/gcc-${PV}/gcc-fortran-${PV}.tar.bz2
+	         mirror://gnu/gcc/gcc-${PV}/gcc-g++-${PV}.tar.bz2
+	         mirror://gnu/gcc/gcc-${PV}/gcc-objc-${PV}.tar.bz2"
+	SRC_DIR="gcc-${PV}"
+	;;
+esac
+
+PATCH_URI="config-rpath.patch"
+
+PKG_NAMES="${PN} ${PN}-core ${PN}-ada ${PN}-fortran ${PN}-g++ ${PN}-objc"
+
+CYGCONF_ARGS="
+	--disable-multilib
+	--enable-languages=c,ada,c++,fortran,lto,objc,obj-c++
+	--enable-version-specific-runtime-libs
+	--with-dwarf2
+	--with-system-zlib
+"
+
+src_install() {
+	cd ${B}
+	cyginstall -j1
+
+	# Remove Cygwin-host libiberty.a
+	rm -f ${D}/usr/lib/libiberty.a
+
+	# Workaround GCC multilib install bug
+	mv ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/lib64/libgcc_s.* ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/${PV[1]}.*/
+#	mv ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/lib/libgcc_s.* ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/4.*/32/
+
+	# conflicts with native gcc
+	rm -fr ${D}/usr/share/{gcc-*,info,locale,man/man7}
+}

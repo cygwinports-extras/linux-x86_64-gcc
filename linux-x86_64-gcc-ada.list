@@ -1,0 +1,5 @@
+usr/bin/*-gnat*
+usr/lib/gcc/*/*/adainclude/
+usr/lib/gcc/*/*/adalib/
+usr/lib/gcc/*/*/gnat1.exe
+
