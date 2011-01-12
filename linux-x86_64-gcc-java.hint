@@ -1,0 +1,7 @@
+category: Devel
+requires: gcc4-java java-ecj libcloog0 libelf0 libgcj11 libgmp3 libmpc1 libmpfr1 libppl zlib0 linux-x86_64-binutils linux-x86_64-glibc linux-x86_64-gcc-core linux-x86_64-zlib
+external-source: linux-x86_64-gcc
+sdesc: "GCC for Linux x86_64 toolchain (Java)"
+ldesc: "The GNU Compiler Collection includes front ends for C, C++, 
+Objective-C, Fortran, Java, and Ada, as well as libraries for these 
+languages (libstdc++, libgcj,...)."

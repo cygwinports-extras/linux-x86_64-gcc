@@ -2,7 +2,7 @@
 usr/bin/*-cpp.exe
 usr/bin/*-gcc*
 usr/bin/*-gcov.exe
-usr/*/lib*/libiberty.a
+usr/*/lib*/
 usr/lib/gcc/*/*/cc1.exe
 usr/lib/gcc/*/*/collect2.exe
 usr/lib/gcc/*/*/crt*.o
