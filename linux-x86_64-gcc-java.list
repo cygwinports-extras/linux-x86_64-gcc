@@ -10,5 +10,6 @@ usr/lib/gcc/*/*/jc1.exe
 usr/lib/gcc/*/*/jvgenmain.exe
 usr/lib/gcc/*/*/libgcj*
 usr/lib/gcc/*/*/libgij*
+usr/share/gcc-*/*/java/
 usr/share/man/man1/*-gcj.1*
 usr/*/sys-root/usr/lib/pkgconfig/libgcj-*.pc

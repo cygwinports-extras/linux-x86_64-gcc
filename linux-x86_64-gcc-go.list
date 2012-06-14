@@ -1,0 +1,6 @@
+usr/bin/*-gccgo*
+usr/lib/gcc/*/*/go1.exe
+usr/lib/gcc/*/*/libgo.*
+usr/lib/gcc/*/*/libgobegin.*
+usr/lib/gcc/*/*/go/
+usr/share/man/man1/*-gccgo.1*

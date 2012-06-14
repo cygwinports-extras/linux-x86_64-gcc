@@ -5,4 +5,5 @@ usr/lib/gcc/*/*/cc1plus.exe
 usr/lib/gcc/*/*/include/c++/
 usr/lib/gcc/*/*/libstdc++.*
 usr/lib/gcc/*/*/libsupc++.*
+usr/share/gcc-*/*/python/libstdcxx/
 usr/share/man/man1/*-g++.1*

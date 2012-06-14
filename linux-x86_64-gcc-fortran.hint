@@ -1,5 +1,5 @@
 category: Devel
-requires: libcloog0 libelf0 libgmp3 libmpc1 libmpfr1 libppl zlib0 linux-x86_64-binutils linux-x86_64-glibc linux-x86_64-gcc-core
+requires: libgmp3 libiconv2 libintl8 libmpc1 libmpfr4 zlib0 linux-x86_64-binutils linux-x86_64-glibc linux-x86_64-gcc-core
 external-source: linux-x86_64-gcc
 sdesc: "GCC for Linux x86_64 toolchain (Fortran)"
 ldesc: "The GNU Compiler Collection includes front ends for C, C++, 

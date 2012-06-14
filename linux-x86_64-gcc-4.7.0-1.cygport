@@ -17,23 +17,28 @@ esac
 
 PATCH_URI="
 	config-rpath.patch
-	4.5.2-cross-ecjx.patch
+	4.7.0-cross-datadir.patch
+	4.7.0-cross-ecjx.patch
 "
 
-PKG_NAMES="${PN} ${PN}-core ${PN}-ada ${PN}-fortran ${PN}-g++ ${PN}-java ${PN}-objc"
+PKG_NAMES="${PN} ${PN}-core ${PN}-fortran ${PN}-go ${PN}-g++ ${PN}-java ${PN}-objc"
 
 CYGCONF_ARGS="
 	--disable-multilib
-	--enable-languages=c,ada,c++,fortran,java,lto,objc,obj-c++
+	--enable-languages=c,c++,fortran,go,java,lto,objc,obj-c++
 	--enable-version-specific-runtime-libs
 	--with-dwarf2
 	--with-ecj-jar=/usr/share/java/ecj.jar
 	--with-system-zlib
+	--with-arch_32=i686 --with-tune=generic
 "
 
 src_install() {
 	cd ${B}
 	cyginstall -j1
+
+	# incorrect location
+	mv ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/lib64/go ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/${PV}/
 
 	# Remove Cygwin-host libiberty.a
 	rm -f ${D}/usr/lib/libiberty.a
@@ -46,5 +51,7 @@ src_install() {
 	mv ${D}/usr/lib/pkgconfig/* ${D}${TOOLCHAIN_SYSROOT}/usr/lib/pkgconfig/
 
 	# conflicts with native gcc
-	rm -fr ${D}/usr/share/{gcc-*,info,locale,man/man7}
+	rm -fr ${D}/usr/share/{info,locale,man/man7}
 }
+
+KEEP_LA_FILES="none"
