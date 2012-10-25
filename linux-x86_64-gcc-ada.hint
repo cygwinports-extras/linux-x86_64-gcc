@@ -1,7 +1,0 @@
-category: Devel
-requires: libgmp3 libiconv2 libintl8 libmpc1 libmpfr4 zlib0 linux-x86_64-binutils linux-x86_64-glibc linux-x86_64-gcc-core
-external-source: linux-x86_64-gcc
-sdesc: "GCC for Linux x86_64 toolchain (Ada)"
-ldesc: "The GNU Compiler Collection includes front ends for C, C++, 
-Objective-C, Fortran, Java, and Ada, as well as libraries for these 
-languages (libstdc++, libgcj,...)."

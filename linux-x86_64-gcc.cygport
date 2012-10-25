@@ -1,0 +1,163 @@
+TOOLCHAIN_TARGET="x86_64-pc-linux-gnu"
+inherit toolchain
+
+NAME="linux-x86_64-gcc"
+VERSION=4.7.2
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="GCC for Linux x86-64 toolchain"
+DESCRIPTION="The GNU Compiler Collection includes front ends for C, C++,
+Objective-C, Fortran, Java, and Ada, as well as libraries for these languages
+(libstdc++, libgcj, etc.).  This package provides cross-compilers for the
+GNU/Linux x86_64 platform (x86_64-pc-linux-gnu)."
+HOMEPAGE="http://gcc.gnu.org/"
+
+case ${#PV[3]} in
+8)	snapshot_v="${PV[1]}.${PV[2]}-${PV[3]}"
+	SRC_URI="mirror://gcc/snapshots/${snapshot_v}/gcc-${snapshot_v}.tar.bz2"
+	SRC_DIR="gcc-${snapshot_v}"
+	;;
+*)	SRC_URI="mirror://gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2"
+	SRC_DIR="gcc-${PV}"
+	;;
+esac
+SRC_DIR="gcc-${PV}"
+
+PATCH_URI="
+	config-rpath.patch
+	4.7.0-cross-datadir.patch
+	4.7.0-cross-ecjx.patch
+"
+
+PKG_NAMES="${PN}-core ${PN}-g++ ${PN}-fortran ${PN}-go ${PN}-java ${PN}-objc ${PN}-objc++"
+linux_x86_64_gcc_core_REQUIRES="linux-x86_64-binutils"
+linux_x86_64_gcc_core_SUMMARY="${SUMMARY} (C, OpenMP)"
+linux_x86_64_gcc_core_CONTENTS="
+	--exclude=c++ --exclude=objc --exclude=gcj --exclude=jni*.h
+	usr/bin/${TOOLCHAIN_TARGET}-cpp.exe
+	usr/bin/${TOOLCHAIN_TARGET}-gcc.exe
+	usr/bin/${TOOLCHAIN_TARGET}-gcc-*.exe
+	usr/bin/${TOOLCHAIN_TARGET}-gcov.exe
+	usr/${TOOLCHAIN_TARGET}/lib64/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cc1.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/collect2.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/crt*.o
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cyglto_plugin-0.dll
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include-fixed/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/install-tools/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgcc*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgcov.*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgomp.*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libitm*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libmudflap*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libquadmath*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libssp*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/lto*.exe
+	usr/share/doc/
+	usr/share/man/man1/${TOOLCHAIN_TARGET}-cpp.1*
+	usr/share/man/man1/${TOOLCHAIN_TARGET}-gcc.1*
+	usr/share/man/man1/${TOOLCHAIN_TARGET}-gcov.1*
+"
+linux_x86_64_gcc_g___SUMMARY="${SUMMARY} (C++)"
+linux_x86_64_gcc_g___CONTENTS="
+	--exclude=gcj --exclude=gnu --exclude=java --exclude=javax --exclude=org
+	usr/bin/${TOOLCHAIN_TARGET}-c++.exe
+	usr/bin/${TOOLCHAIN_TARGET}-g++.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cc1plus.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libstdc++.*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libsupc++.*
+	usr/share/gcc-${VERSION}/${TOOLCHAIN_TARGET}/python/libstdcxx/
+	usr/share/man/man1/${TOOLCHAIN_TARGET}-g++.1*
+"
+linux_x86_64_gcc_fortran_SUMMARY="${SUMMARY} (Fortran)"
+linux_x86_64_gcc_fortran_CONTENTS="
+	usr/bin/${TOOLCHAIN_TARGET}-gfortran.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/f951.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/finclude/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libcaf_single.*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgfortran*
+	usr/share/man/man1/${TOOLCHAIN_TARGET}-gfortran.1*
+"
+linux_x86_64_gcc_ada_SUMMARY="${SUMMARY} (Ada)"
+linux_x86_64_gcc_ada_CONTENTS="
+	usr/bin/${TOOLCHAIN_TARGET}-gnat*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/adainclude/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/adalib/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/gnat1.exe
+"
+linux_x86_64_gcc_go_SUMMARY="${SUMMARY} (Go)"
+linux_x86_64_gcc_go_CONTENTS="
+	usr/bin/${TOOLCHAIN_TARGET}-gccgo*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/go1.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgo.*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgobegin.*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/go/
+	usr/share/man/man1/${TOOLCHAIN_TARGET}-gccgo.1*
+"
+linux_x86_64_gcc_java_REQUIRES="${PN}-g++ java-ecj"
+linux_x86_64_gcc_java_SUMMARY="${SUMMARY} (Java)"
+linux_x86_64_gcc_java_CONTENTS="
+	usr/bin/${TOOLCHAIN_TARGET}-gcj.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/ecj1.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/gcj/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/gnu/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/java*/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/org/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/gcj/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/jni*.h
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/jc1.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/jvgenmain.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgcj*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgij*
+	usr/share/gcc-${VERSION}/${TOOLCHAIN_TARGET}/java/
+	usr/share/man/man1/${TOOLCHAIN_TARGET}-gcj.1*
+	${TOOLCHAIN_SYSROOT#/}/usr/lib/pkgconfig/libgcj-*.pc
+"
+linux_x86_64_gcc_objc_SUMMARY="${SUMMARY} (Objective-C)"
+linux_x86_64_gcc_objc_CONTENTS="
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cc1obj.exe
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/objc/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libobjc.*
+"
+linux_x86_64_gcc_objc___REQUIRES="${PN}-core ${PN}-g++ ${PN}-objc"
+linux_x86_64_gcc_objc___SUMMARY="${SUMMARY} (Objective-C++)"
+linux_x86_64_gcc_objc___CONTENTS="
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cc1objplus.exe
+"
+
+DEPS_PATH="${TOOLCHAIN_SYSROOT}/usr/lib"
+
+CYGCONF_ARGS="
+	--disable-multilib
+	--enable-languages=c,c++,fortran,go,java,lto,objc,obj-c++
+	--enable-version-specific-runtime-libs
+	--disable-alsa
+	--with-dwarf2
+	--with-ecj-jar=/usr/share/java/ecj.jar
+	--with-system-zlib
+	--with-arch_32=i686 --with-tune=generic
+"
+
+src_install() {
+	cd ${B}
+	cyginstall -j1
+
+	# incorrect location
+	mv ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/lib64/go ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/
+
+	# Remove Cygwin-host libiberty.a
+	rm -f ${D}/usr/lib/libiberty.a
+
+	# Workaround GCC multilib install bug
+	mv ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/lib64/libgcc_s.* ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/
+
+	dodir ${TOOLCHAIN_SYSROOT}/usr/lib/pkgconfig
+	mv ${D}/usr/lib/pkgconfig/* ${D}${TOOLCHAIN_SYSROOT}/usr/lib/pkgconfig/
+
+	# conflicts with native gcc
+	rm -fr ${D}/usr/share/{info,locale,man/man7}
+}
+
+KEEP_LA_FILES="none"

@@ -1,9 +1,0 @@
---exclude=gcj --exclude=gnu --exclude=java --exclude=javax --exclude=org
-usr/bin/*-c++.exe
-usr/bin/*-g++.exe
-usr/lib/gcc/*/*/cc1plus.exe
-usr/lib/gcc/*/*/include/c++/
-usr/lib/gcc/*/*/libstdc++.*
-usr/lib/gcc/*/*/libsupc++.*
-usr/share/gcc-*/*/python/libstdcxx/
-usr/share/man/man1/*-g++.1*
