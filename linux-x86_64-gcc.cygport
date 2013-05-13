@@ -2,7 +2,7 @@ TOOLCHAIN_TARGET="x86_64-pc-linux-gnu"
 inherit toolchain
 
 NAME="linux-x86_64-gcc"
-VERSION=4.7.2
+VERSION=4.7.3
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="GCC for Linux x86-64 toolchain"
@@ -24,12 +24,13 @@ esac
 SRC_DIR="gcc-${PV}"
 
 PATCH_URI="
-	config-rpath.patch
 	4.7.0-cross-datadir.patch
 	4.7.0-cross-ecjx.patch
+	4.7-libffi-noinst.patch
+	4.8-lto-plugin-soname.patch
 "
 
-PKG_NAMES="${PN}-core ${PN}-g++ ${PN}-fortran ${PN}-go ${PN}-java ${PN}-objc ${PN}-objc++"
+PKG_NAMES="${NAME}-core ${NAME}-g++ ${NAME}-ada ${NAME}-fortran ${NAME}-go ${NAME}-java ${NAME}-objc ${NAME}-objc++"
 linux_x86_64_gcc_core_REQUIRES="linux-x86_64-binutils"
 linux_x86_64_gcc_core_SUMMARY="${SUMMARY} (C, OpenMP)"
 linux_x86_64_gcc_core_CONTENTS="
@@ -38,11 +39,10 @@ linux_x86_64_gcc_core_CONTENTS="
 	usr/bin/${TOOLCHAIN_TARGET}-gcc.exe
 	usr/bin/${TOOLCHAIN_TARGET}-gcc-*.exe
 	usr/bin/${TOOLCHAIN_TARGET}-gcov.exe
-	usr/${TOOLCHAIN_TARGET}/lib64/
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cc1.exe
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/collect2.exe
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/crt*.o
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cyglto_plugin-0.dll
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cyglto_plugin.dll
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include-fixed/
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/install-tools/
@@ -81,6 +81,7 @@ linux_x86_64_gcc_fortran_CONTENTS="
 	usr/share/man/man1/${TOOLCHAIN_TARGET}-gfortran.1*
 "
 linux_x86_64_gcc_ada_SUMMARY="${SUMMARY} (Ada)"
+linux_x86_64_gcc_ada_REQUIRES="${NAME}-core"
 linux_x86_64_gcc_ada_CONTENTS="
 	usr/bin/${TOOLCHAIN_TARGET}-gnat*
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/adainclude/
@@ -96,7 +97,7 @@ linux_x86_64_gcc_go_CONTENTS="
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/go/
 	usr/share/man/man1/${TOOLCHAIN_TARGET}-gccgo.1*
 "
-linux_x86_64_gcc_java_REQUIRES="${PN}-g++ java-ecj"
+linux_x86_64_gcc_java_REQUIRES="${NAME}-g++ java-ecj"
 linux_x86_64_gcc_java_SUMMARY="${SUMMARY} (Java)"
 linux_x86_64_gcc_java_CONTENTS="
 	usr/bin/${TOOLCHAIN_TARGET}-gcj.exe
@@ -121,7 +122,7 @@ linux_x86_64_gcc_objc_CONTENTS="
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/objc/
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libobjc.*
 "
-linux_x86_64_gcc_objc___REQUIRES="${PN}-core ${PN}-g++ ${PN}-objc"
+linux_x86_64_gcc_objc___REQUIRES="${NAME}-core ${NAME}-g++ ${NAME}-objc"
 linux_x86_64_gcc_objc___SUMMARY="${SUMMARY} (Objective-C++)"
 linux_x86_64_gcc_objc___CONTENTS="
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cc1objplus.exe
@@ -130,14 +131,27 @@ linux_x86_64_gcc_objc___CONTENTS="
 DEPS_PATH="${TOOLCHAIN_SYSROOT}/usr/lib"
 
 CYGCONF_ARGS="
-	--disable-multilib
-	--enable-languages=c,c++,fortran,go,java,lto,objc,obj-c++
+	--enable-shared --enable-shared-libgcc --enable-static
+	--enable-languages=c,c++,ada,fortran,go,java,lto,objc,obj-c++
 	--enable-version-specific-runtime-libs
 	--disable-alsa
+	--disable-multilib
+	--enable-libada
+	--enable-libgomp
+	--enable-libitm
+	--enable-libjava
+	--enable-libquadmath
+	--enable-libquadmath-support
+	--enable-libssp
+	--enable-default-preferences-peer=file
+	--disable-java-awt
+	--disable-jni
+	--with-arch-32=i686 --with-tune=generic
 	--with-dwarf2
 	--with-ecj-jar=/usr/share/java/ecj.jar
+	--with-gnu-as --with-gnu-ld
+	--with-cloog-include=/usr/include/cloog-ppl
 	--with-system-zlib
-	--with-arch_32=i686 --with-tune=generic
 "
 
 src_install() {
