@@ -2,7 +2,7 @@ TOOLCHAIN_TARGET="x86_64-pc-linux-gnu"
 inherit toolchain
 
 NAME="linux-x86_64-gcc"
-VERSION=4.7.3
+VERSION=4.8.2
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="GCC for Linux x86-64 toolchain"
@@ -26,9 +26,16 @@ PATCH_URI="
 	4.7.0-cross-ecjx.patch
 	4.7-libffi-noinst.patch
 	4.8-lto-plugin-soname.patch
+	4.6-textdomain.patch
+	4.8-Wimplicit-decls.patch
+	4.8-cygwin64.patch
 "
 
-PKG_NAMES="${NAME}-core ${NAME}-g++ ${ARCH_i686+${NAME}-ada} ${NAME}-fortran ${NAME}-go ${ARCH_i686+${NAME}-java} ${NAME}-objc ${NAME}-objc++"
+PKG_NAMES="${NAME}-core ${NAME}-g++ ${NAME}-fortran ${NAME}-go ${NAME}-objc ${NAME}-objc++"
+if defined ARCH_i686
+then
+	PKG_NAMES+=" ${NAME}-ada ${NAME}-java"
+fi
 linux_x86_64_gcc_core_REQUIRES="linux-x86_64-binutils"
 linux_x86_64_gcc_core_SUMMARY="${SUMMARY} (C, OpenMP)"
 linux_x86_64_gcc_core_CONTENTS="
@@ -44,6 +51,8 @@ linux_x86_64_gcc_core_CONTENTS="
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include-fixed/
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/install-tools/
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libasan*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libatomic*
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgcc*
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgcov.*
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgomp.*
@@ -51,8 +60,10 @@ linux_x86_64_gcc_core_CONTENTS="
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libmudflap*
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libquadmath*
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libssp*
+	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libtsan*
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/lto*.exe
 	usr/share/doc/
+	usr/share/locale/
 	usr/share/man/man1/${TOOLCHAIN_TARGET}-cpp.1*
 	usr/share/man/man1/${TOOLCHAIN_TARGET}-gcc.1*
 	usr/share/man/man1/${TOOLCHAIN_TARGET}-gcov.1*
@@ -129,8 +140,9 @@ linux_x86_64_gcc_objc___CONTENTS="
 DEPS_PATH="${TOOLCHAIN_SYSROOT}/usr/lib"
 
 CYGCONF_ARGS="
+	--libexecdir=/usr/lib
 	--enable-shared --enable-shared-libgcc --enable-static
-	--enable-languages=c,c++,fortran,go,${ARCH_i686+ada,java,}lto,objc,obj-c++
+	--enable-languages=c,c++,fortran,${ARCH_i686+ada,java,}go,lto,objc,obj-c++
 	--enable-version-specific-runtime-libs
 	--disable-alsa
 	--disable-multilib
@@ -148,7 +160,7 @@ CYGCONF_ARGS="
 	--with-dwarf2
 	--with-ecj-jar=/usr/share/java/ecj.jar
 	--with-gnu-as --with-gnu-ld
-	--with-cloog-include=/usr/include/cloog-ppl
+	--with-cloog-include=/usr/include/cloog-isl
 	--with-system-zlib
 "
 
@@ -172,7 +184,7 @@ src_install() {
 	mv ${D}/usr/lib/pkgconfig/* ${D}${TOOLCHAIN_SYSROOT}/usr/lib/pkgconfig/
 
 	# conflicts with native gcc
-	rm -fr ${D}/usr/share/{info,locale,man/man7}
+	rm -fr ${D}/usr/share/{info,man/man7}
 }
 
 KEEP_LA_FILES="none"
