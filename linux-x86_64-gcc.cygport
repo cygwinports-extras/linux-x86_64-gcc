@@ -31,11 +31,7 @@ PATCH_URI="
 	4.8-cygwin64.patch
 "
 
-PKG_NAMES="${NAME}-core ${NAME}-g++ ${NAME}-fortran ${NAME}-go ${NAME}-objc ${NAME}-objc++"
-if defined ARCH_i686
-then
-	PKG_NAMES+=" ${NAME}-ada ${NAME}-java"
-fi
+PKG_NAMES="${NAME}-core ${NAME}-g++ ${NAME}-fortran ${NAME}-go ${NAME}-objc ${NAME}-objc++ ${NAME}-ada"
 linux_x86_64_gcc_core_REQUIRES="linux-x86_64-binutils"
 linux_x86_64_gcc_core_SUMMARY="${SUMMARY} (C, OpenMP)"
 linux_x86_64_gcc_core_CONTENTS="
@@ -106,25 +102,6 @@ linux_x86_64_gcc_go_CONTENTS="
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgobegin.*
 	usr/share/man/man1/${TOOLCHAIN_TARGET}-gccgo.1*
 "
-linux_x86_64_gcc_java_REQUIRES="${NAME}-g++ java-ecj"
-linux_x86_64_gcc_java_SUMMARY="${SUMMARY} (Java)"
-linux_x86_64_gcc_java_CONTENTS="
-	usr/bin/${TOOLCHAIN_TARGET}-gcj.exe
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/ecj1.exe
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/gcj/
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/gnu/
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/java*/
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/c++/org/
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/gcj/
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/include/jni*.h
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/jc1.exe
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/jvgenmain.exe
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgcj*
-	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/libgij*
-	usr/share/gcc-${VERSION}/${TOOLCHAIN_TARGET}/java/
-	usr/share/man/man1/${TOOLCHAIN_TARGET}-gcj.1*
-	${TOOLCHAIN_SYSROOT#/}/usr/lib/pkgconfig/libgcj-*.pc
-"
 linux_x86_64_gcc_objc_SUMMARY="${SUMMARY} (Objective-C)"
 linux_x86_64_gcc_objc_CONTENTS="
 	usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/cc1obj.exe
@@ -142,23 +119,18 @@ DEPS_PATH="${TOOLCHAIN_SYSROOT}/usr/lib"
 CYGCONF_ARGS="
 	--libexecdir=/usr/lib
 	--enable-shared --enable-shared-libgcc --enable-static
-	--enable-languages=c,c++,fortran,${ARCH_i686+ada,java,}go,lto,objc,obj-c++
+	--enable-languages=c,c++,fortran,ada,go,lto,objc,obj-c++
 	--enable-version-specific-runtime-libs
 	--disable-alsa
 	--disable-multilib
-	${ARCH_i686+--enable-libada}
+	--enable-libada
 	--enable-libgomp
 	--enable-libitm
-	${ARCH_i686+--enable-libjava}
 	--enable-libquadmath
 	--enable-libquadmath-support
 	--enable-libssp
-	--enable-default-preferences-peer=file
-	--disable-java-awt
-	--disable-jni
 	--with-arch-32=i686 --with-tune=generic
 	--with-dwarf2
-	--with-ecj-jar=/usr/share/java/ecj.jar
 	--with-gnu-as --with-gnu-ld
 	--with-cloog-include=/usr/include/cloog-isl
 	--with-system-zlib
@@ -179,9 +151,6 @@ src_install() {
 #	mv ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/lib/libgcc_s.* ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/32/
 	mv ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/lib64/libgcc_s.* ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/
 #	mv ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/libx32/libgcc_s.* ${D}/usr/lib/gcc/${TOOLCHAIN_TARGET}/${VERSION}/x32/
-
-	dodir ${TOOLCHAIN_SYSROOT}/usr/lib/pkgconfig
-	mv ${D}/usr/lib/pkgconfig/* ${D}${TOOLCHAIN_SYSROOT}/usr/lib/pkgconfig/
 
 	# conflicts with native gcc
 	rm -fr ${D}/usr/share/{info,man/man7}

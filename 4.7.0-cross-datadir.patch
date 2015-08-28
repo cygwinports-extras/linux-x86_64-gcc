@@ -1,25 +1,3 @@
---- origsrc/gcc-4.7.0/libjava/Makefile.am	2011-08-05 09:37:48.000000000 -0500
-+++ src/gcc-4.7.0/libjava/Makefile.am	2012-06-12 02:57:16.508693300 -0500
-@@ -223,7 +223,7 @@ dbexec_LTLIBRARIES = libjvm.la
- 
- pkgconfigdir = $(libdir)/pkgconfig
- 
--jardir = $(datadir)/java
-+jardir = $(datadir)/gcc-$(gcc_version)/$(target_noncanonical)/java
- jar_DATA = libgcj-$(gcc_version).jar libgcj-tools-$(gcc_version).jar
- if INSTALL_ECJ_JAR
- jar_DATA += $(ECJ_BUILD_JAR)
---- origsrc/gcc-4.7.0/libjava/Makefile.in	2012-06-12 03:04:48.185527700 -0500
-+++ src/gcc-4.7.0/libjava/Makefile.in	2012-03-22 02:37:39.000000000 -0500
-@@ -938,7 +938,7 @@ CORE_PACKAGE_SOURCE_FILES_LO = $(filter-
- @BUILD_SUBLIBS_TRUE@LIBJAVA_CORE_EXTRA = @LIBGCJ_SUBLIB_CORE_EXTRA_DEPS@
- dbexec_LTLIBRARIES = libjvm.la
- pkgconfigdir = $(libdir)/pkgconfig
--jardir = $(datadir)/java
-+jardir = $(datadir)/gcc-$(gcc_version)/$(target_noncanonical)/java
- jar_DATA = libgcj-$(gcc_version).jar libgcj-tools-$(gcc_version).jar \
- 	$(am__append_5)
- @JAVA_HOME_SET_FALSE@JAVA_HOME_DIR = $(prefix)
 --- origsrc/gcc-4.7.0/libstdc++-v3/python/Makefile.am	2012-02-21 04:55:54.000000000 -0600
 +++ src/gcc-4.7.0/libstdc++-v3/python/Makefile.am	2012-06-13 01:36:03.073804100 -0500
 @@ -26,7 +26,7 @@ include $(top_srcdir)/fragment.am
